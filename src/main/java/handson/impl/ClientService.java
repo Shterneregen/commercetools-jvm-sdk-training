@@ -4,6 +4,7 @@ import io.sphere.sdk.client.SphereAccessTokenSupplier;
 import io.sphere.sdk.client.SphereAsyncHttpClientFactory;
 import io.sphere.sdk.client.SphereClient;
 import io.sphere.sdk.client.SphereClientConfig;
+import io.sphere.sdk.client.SphereClientFactory;
 import io.sphere.sdk.http.HttpClient;
 
 import java.io.IOException;
@@ -19,7 +20,8 @@ public class ClientService {
         final SphereClientConfig clientConfig = loadCTPClientConfig();
 
         //TODO 1.3 Create the client
-        return null;
+        final SphereClientFactory factory = SphereClientFactory.of();
+        return factory.createClient(clientConfig);
     }
 
     /**
@@ -32,6 +34,6 @@ public class ClientService {
         prop.load(ClientService.class.getResourceAsStream("/dev.properties"));
 
         //TODO 1.2 Create the configuration for the sphere client
-        return null;
+        return SphereClientConfig.ofProperties(prop, "");
     }
 }
