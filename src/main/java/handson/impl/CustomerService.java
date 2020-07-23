@@ -2,8 +2,13 @@ package handson.impl;
 
 import io.sphere.sdk.client.SphereClient;
 import io.sphere.sdk.customers.Customer;
+import io.sphere.sdk.customers.CustomerDraftBuilder;
+import io.sphere.sdk.customers.CustomerDraftDsl;
 import io.sphere.sdk.customers.CustomerSignInResult;
 import io.sphere.sdk.customers.CustomerToken;
+import io.sphere.sdk.customers.commands.CustomerCreateCommand;
+import io.sphere.sdk.customers.commands.CustomerCreateEmailTokenCommand;
+import io.sphere.sdk.customers.commands.CustomerVerifyEmailCommand;
 
 import java.util.concurrent.CompletionStage;
 
@@ -25,7 +30,8 @@ public class CustomerService extends AbstractService {
      */
     public CompletionStage<CustomerSignInResult> createCustomer(final String email, final String password) {
         // TODO 2.1 Create a customer
-        return null;
+        final CustomerDraftDsl newCustomer = CustomerDraftBuilder.of(email, password).build();
+        return client.execute(CustomerCreateCommand.of(newCustomer));
     }
 
     /**
@@ -38,7 +44,7 @@ public class CustomerService extends AbstractService {
      */
     public CompletionStage<CustomerToken> createEmailVerificationToken(final Customer customer, final Integer timeToLiveInMinutes) {
         // TODO 2.2 Create an email verification token
-        return null;
+        return client.execute(CustomerCreateEmailTokenCommand.of(customer, timeToLiveInMinutes));
     }
 
     /**
@@ -49,6 +55,6 @@ public class CustomerService extends AbstractService {
      */
     public CompletionStage<Customer> verifyEmail(final CustomerToken customerToken) {
         // TODO 2.3 Verify the customer token
-        return null;
+        return client.execute(CustomerVerifyEmailCommand.ofCustomerToken(customerToken));
     }
 }
