@@ -27,7 +27,8 @@ public class ProductQueryService extends AbstractService {
      */
     private CompletionStage<PagedQueryResult<Category>> findCategory(final Locale locale, final String name) {
         // TODO 4.1 Find a category
-        return null;
+        CategoryQuery categoryQuery = CategoryQuery.of().byName(locale, name);
+        return client.execute(categoryQuery);
     }
 
     /**
@@ -37,7 +38,9 @@ public class ProductQueryService extends AbstractService {
      */
     private CompletionStage<PagedQueryResult<ProductProjection>> withCategory(final Category category) {
         // TODO 4.2 Query a category
-        return null;
+        ProductProjectionQuery productProjectionQuery = ProductProjectionQuery.ofStaged().withPredicates(
+                m -> m.categories().isIn(Arrays.asList(category)));
+        return client.execute(productProjectionQuery);
     }
 
     /**
@@ -49,6 +52,6 @@ public class ProductQueryService extends AbstractService {
      */
     public CompletionStage<PagedQueryResult<ProductProjection>> findProductsWithCategory(final Locale locale, final String name) {
         // TODO 4.3 Find a product with category
-        return null;
+        return findCategory(locale, name).thenComposeAsync(c -> withCategory(c.getResults().get(0)));
     }
 }
