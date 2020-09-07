@@ -5,6 +5,7 @@ import io.sphere.sdk.carts.CartDraftBuilder;
 import io.sphere.sdk.carts.CartDraftDsl;
 import io.sphere.sdk.carts.commands.CartCreateCommand;
 import io.sphere.sdk.carts.commands.CartUpdateCommand;
+import io.sphere.sdk.carts.commands.updateactions.AddDiscountCode;
 import io.sphere.sdk.carts.commands.updateactions.AddLineItem;
 import io.sphere.sdk.client.SphereClient;
 import io.sphere.sdk.customers.Customer;
@@ -56,6 +57,6 @@ public class CartService extends AbstractService {
      */
     public CompletionStage<Cart> addDiscountToCart(final String code, final Cart cart) {
         // TODO 5.1 Add discount code to cart
-        return null;
+        return client.execute(CartUpdateCommand.of(cart, AddDiscountCode.of(code)));
     }
 }
