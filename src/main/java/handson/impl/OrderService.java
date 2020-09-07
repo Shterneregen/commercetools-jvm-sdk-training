@@ -4,6 +4,7 @@ import io.sphere.sdk.carts.Cart;
 import io.sphere.sdk.client.SphereClient;
 import io.sphere.sdk.orders.Order;
 import io.sphere.sdk.orders.OrderState;
+import io.sphere.sdk.orders.commands.OrderFromCartCreateCommand;
 
 import java.util.concurrent.CompletionStage;
 
@@ -24,7 +25,7 @@ public class OrderService extends AbstractService {
      */
     public CompletionStage<Order> createOrder(final Cart cart) {
         // TODO 6.1 Create a new order from cart
-        return null;
+        return client.execute(OrderFromCartCreateCommand.of(cart));
     }
 
     /**

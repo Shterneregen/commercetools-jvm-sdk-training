@@ -1,15 +1,20 @@
 package handson.impl;
 
+import com.neovisionaries.i18n.CountryCode;
 import io.sphere.sdk.carts.Cart;
 import io.sphere.sdk.carts.CartDraftBuilder;
 import io.sphere.sdk.carts.CartDraftDsl;
+import io.sphere.sdk.carts.LineItemDraftBuilder;
+import io.sphere.sdk.carts.LineItemDraftDsl;
 import io.sphere.sdk.carts.commands.CartCreateCommand;
 import io.sphere.sdk.carts.commands.CartUpdateCommand;
 import io.sphere.sdk.carts.commands.updateactions.AddDiscountCode;
 import io.sphere.sdk.carts.commands.updateactions.AddLineItem;
 import io.sphere.sdk.client.SphereClient;
 import io.sphere.sdk.customers.Customer;
+import io.sphere.sdk.models.Address;
 import io.sphere.sdk.models.DefaultCurrencyUnits;
+import io.sphere.sdk.products.ByIdVariantIdentifier;
 import io.sphere.sdk.products.ProductProjection;
 
 import java.util.concurrent.CompletionStage;
@@ -31,8 +36,13 @@ public class CartService extends AbstractService {
      */
     public CompletionStage<Cart> createCart(final Customer customer) {
         // TODO 3.1. Create a cart
-        CartDraftDsl cartDraftDsl = CartDraftBuilder.of(DefaultCurrencyUnits.EUR).customerId(customer.getId()).build();
-        return client.execute(CartCreateCommand.of(cartDraftDsl));
+        final CartDraftDsl cartDraft = CartDraftBuilder.of(DefaultCurrencyUnits.EUR)
+                .country(CountryCode.DE)
+                .shippingAddress(Address.of(CountryCode.DE))
+                .customerId(customer.getId())
+                .deleteDaysAfterLastModification(1)
+                .build();
+        return client.execute(CartCreateCommand.of(cartDraft));
     }
 
     /**
@@ -44,7 +54,12 @@ public class CartService extends AbstractService {
      */
     public CompletionStage<Cart> addProductToCart(final ProductProjection product, final Cart cart) {
         // TODO 3.2. Add line item to a cart
-        AddLineItem addLineItem = AddLineItem.of(product.getId(), product.getMasterVariant().getId(), 1L);
+        final LineItemDraftDsl lineItemDraft = LineItemDraftBuilder
+                .ofVariantIdentifier(ByIdVariantIdentifier.of(product, 1), 1L)
+                .build();
+
+        final AddLineItem addLineItem = AddLineItem.of(lineItemDraft);
+
         return client.execute(CartUpdateCommand.of(cart, addLineItem));
     }
 
